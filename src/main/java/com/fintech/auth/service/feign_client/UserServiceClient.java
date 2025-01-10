@@ -3,10 +3,7 @@ package com.fintech.auth.service.feign_client;
 import com.fintech.auth.controller.dto.request.UserRequest;
 import com.fintech.auth.controller.dto.response.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "USER-SERVICE" )
 public interface UserServiceClient {
@@ -18,5 +15,8 @@ public interface UserServiceClient {
 
   @PostMapping("/api/users")
   UserResponse createUser(@RequestBody UserRequest userRequest);
+
+  @DeleteMapping("/api/users/{id}")
+  void deleteUser(@PathVariable("id") Long id);
 
 }

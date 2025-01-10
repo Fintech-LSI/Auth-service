@@ -12,19 +12,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
+@Getter
 public class JwtUtil {
 
   @Value("${jwt.secret}")
   private String secretKey;
   @Value("${jwt.expiration_time}")
   private long EXPIRATION_TIME; // 10 hours
-
-  public long getEXPIRATION_TIME() {
-    return EXPIRATION_TIME;
-  }
-  public String getSecretKey() {
-    return secretKey;
-  }
 
   private SecretKey getSigningKey() {
     return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));

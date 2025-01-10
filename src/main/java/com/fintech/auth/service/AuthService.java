@@ -1,15 +1,18 @@
 package com.fintech.auth.service;
 
 import com.fintech.auth.config.JwtUtil;
+import com.fintech.auth.config.exceptions.UserNotFoundException;
 import com.fintech.auth.controller.dto.request.RegisterRequest;
 import com.fintech.auth.controller.dto.request.UserRequest;
 import com.fintech.auth.controller.dto.response.UserResponse;
+import com.fintech.auth.controller.dto.response.ValidResponse;
 import com.fintech.auth.entity.Auth;
 import com.fintech.auth.entity.Role;
 import com.fintech.auth.exception.LoginFailed;
 import com.fintech.auth.exception.RegisterFailed;
 import com.fintech.auth.repository.AuthRepository;
 import com.fintech.auth.service.feign_client.UserServiceClient;
+import feign.FeignException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +32,6 @@ public class AuthService {
     this.jwtUtil = jwtUtil;
   }
 
-  public String test(){
-    return jwtUtil.getSecretKey()+" / "+jwtUtil.getEXPIRATION_TIME();
-  }
 
   public String authenticate(String email, String password) throws LoginFailed {
     Optional<Auth> userAuth = authRepository.findByEmail(email);
@@ -48,7 +48,7 @@ public class AuthService {
     }
   }
 
-  public Auth register(RegisterRequest request) throws RegisterFailed {
+  public void register(RegisterRequest request) throws RegisterFailed {
     // Check if the user already exists
     if (authRepository.findByEmail(request.email()).isPresent()) {
       throw new RegisterFailed("User already exists with email: " + request.email());
@@ -64,16 +64,63 @@ public class AuthService {
       .role(Role.USER)
       .build();
 
+    UserResponse userResponse;
     try {
       // Send a request to create the user in User Service
-      UserResponse userResponse = userServiceClient.createUser(
+      userResponse = userServiceClient.createUser(
         new UserRequest(request.firstName(), request.lastName(), request.email()));
     } catch (Exception e) {
       throw new RegisterFailed("Failed to register user in User Service: " + e.getMessage());
     }
+    try {
+      authRepository.save(auth);
+    } catch (Exception e) {
+      userServiceClient.deleteUser(userResponse.id());
+      throw new RegisterFailed("Failed to register user in Auth Service: so we delete the user in user service \n ::" + e.getMessage());
+    }
 
-    return authRepository.save(auth);
+  }
+
+  public void deleteAuthUser(Long id) throws UserNotFoundException {
+    Optional<Auth> auth = authRepository.findById(id);
+    if (auth.isPresent()) {
+      authRepository.delete(auth.get());
+    }else {
+      throw new UserNotFoundException("User not found. in Auth Service /deleteAuthUser");
+    }
+  }
+
+  public ValidResponse validToken(String token) throws UserNotFoundException , RuntimeException {
+    try {
+      String email = jwtUtil.extractEmail(token);
+      UserResponse userResponse = userServiceClient.getUserByEmail(email);
+      Auth userAuth = authRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found in auth"));
+
+      return ValidResponse.builder()
+        .valid(true)
+        .email(userAuth.getEmail())
+        .Role(userAuth.getRole().toString())
+        .user(userResponse)
+        .build();
+
+
+
+    } catch (FeignException.NotFound e) {
+      throw new UserNotFoundException("User with email not found: " + e.getMessage());
+    } catch (FeignException e) {
+      throw new RuntimeException("An error occurred while communicating with the user service: " + e.getMessage());
+    }
   }
 
 
+
+
 }
+
+
+
+
+
+
+
+
