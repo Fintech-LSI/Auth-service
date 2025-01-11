@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.9.6-openjdk-21-slim AS build
+FROM maven:3.9.6-amazoncorretto-21 AS build
 
 WORKDIR /app
 
@@ -18,6 +18,6 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENV JAVA_TOOL_OPTIONS "-Xms256m -Xmx512m"
+ENV JAVA_TOOL_OPTIONS="-Xms256m -Xmx512m"
 
-ENTRYPOINT ["java", "$JAVA_TOOL_OPTIONS", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
