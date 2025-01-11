@@ -2,6 +2,7 @@ package com.fintech.auth.controller;
 
 import com.fintech.auth.config.JwtUtil;
 import com.fintech.auth.controller.dto.response.JwtResponse;
+import com.fintech.auth.entity.Role;
 import com.fintech.auth.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +21,4 @@ public class testcontroller {
 
 
 
-
-
-  @GetMapping("/token")
-  public JwtResponse testToken(@RequestParam("email") String email) {
-    return new JwtResponse(jwtUtil.generateToken(email));
-  }
 }

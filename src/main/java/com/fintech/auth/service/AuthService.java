@@ -4,6 +4,7 @@ import com.fintech.auth.config.JwtUtil;
 import com.fintech.auth.config.exceptions.UserNotFoundException;
 import com.fintech.auth.controller.dto.request.RegisterRequest;
 import com.fintech.auth.controller.dto.request.UserRequest;
+import com.fintech.auth.controller.dto.response.JwtResponse;
 import com.fintech.auth.controller.dto.response.UserResponse;
 import com.fintech.auth.controller.dto.response.ValidResponse;
 import com.fintech.auth.entity.Auth;
@@ -33,13 +34,18 @@ public class AuthService {
   }
 
 
-  public String authenticate(String email, String password) throws LoginFailed {
+  public JwtResponse authenticate(String email, String password) throws LoginFailed {
     Optional<Auth> userAuth = authRepository.findByEmail(email);
     if (userAuth.isPresent()) {
       Auth user = userAuth.get();
       if (BCrypt.checkpw(password, user.getPassword())) {
         // Generate JWT upon successful authentication
-        return jwtUtil.generateToken(user.getEmail());
+        String token =  jwtUtil.generateToken(user.getEmail() , user.getRole());
+        String role = user.getRole().toString();
+        return JwtResponse.builder()
+          .token(token)
+          .role(role)
+          .build();
       } else {
         throw new LoginFailed("Invalid password.");
       }

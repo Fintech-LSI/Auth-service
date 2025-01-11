@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 @Data
 @Builder
-public class JwtResponse implements Serializable {
-  private String token;
-  private String role;
+public class ErrorResponse implements Serializable {
+  private String message;
 }

@@ -1,5 +1,6 @@
 package com.fintech.auth.config;
 
+import com.fintech.auth.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,9 +25,10 @@ public class JwtUtil {
     return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
   }
 
-  public String generateToken(String email) {
+  public String generateToken(String email , Role role) {
     return Jwts.builder()
       .setSubject(email)
+      .claim("role", role.toString()) // Add the role as a custom claim
       .setIssuedAt(new Date())
       .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
       .signWith(getSigningKey())  // SignatureAlgorithm is now automatically selected
@@ -34,11 +36,19 @@ public class JwtUtil {
   }
 
   public String extractEmail(String token) {
-    Claims claims = Jwts.parser()  // Use parserBuilder() instead of parser()
+    Claims claims = getClaimsFromToken(token);
+    return claims.getSubject();
+  }
+  public String extractRole(String token) {
+    Claims claims = getClaimsFromToken(token);
+    return claims.getSubject();
+  }
+
+  private Claims getClaimsFromToken(String token) {
+    return Jwts.parser()  // Use parserBuilder() instead of parser()
       .setSigningKey(getSigningKey())
       .build()
       .parseClaimsJws(token)
       .getBody();
-    return claims.getSubject();
   }
 }
