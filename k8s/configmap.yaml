@@ -11,7 +11,7 @@ data:
         name: auth-service
       
       datasource:
-        url: jdbc:mysql://terraform-20250112133601126400000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
+        url: jdbc:mysql://terraform-20250112150823870000000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
         driver-class-name: com.mysql.cj.jdbc.Driver
         hikari:
           maximum-pool-size: 10
