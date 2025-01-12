@@ -39,4 +39,4 @@ data:
           prefer-ip-address: true
     
     server:
-      port: 8080
+      port: 8946

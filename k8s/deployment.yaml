@@ -17,7 +17,7 @@ spec:
         - name: auth-service
           image: public.ecr.aws/z1z0w2y6/auth-service:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 8946
           envFrom:
             - configMapRef:
                 name: auth-service-config
@@ -56,6 +56,6 @@ spec:
           readinessProbe:
             httpGet:
               path: /actuator/health
-              port: 8080
+              port: 8946
             initialDelaySeconds: 30
             periodSeconds: 10
