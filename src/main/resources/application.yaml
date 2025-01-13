@@ -3,6 +3,15 @@ spring:
     import: optional:configserver:http://localhost:8889
   application:
     name: auth-service
+  datasource:
+    url: jdbc:mysql://terraform-20250112150823870000000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+          dialect: org.hibernate.dialect.MySQL8Dialect
 
 
 jwt:
