@@ -75,7 +75,13 @@ public class AuthService {
     try {
       // Send a request to create the user in User Service
       userResponse = userServiceClient.createUser(
-        new UserRequest(request.firstName(), request.lastName(), request.email()));
+        UserRequest.builder()
+          .email(request.email())
+          .firstName(request.firstName())
+          .lastName(request.lastName())
+          .age(request.age())
+          .build()
+      );
     } catch (Exception e) {
       throw new RegisterFailed("Failed to register user in User Service: " + e.getMessage());
     }
@@ -109,8 +115,6 @@ public class AuthService {
         .Role(userAuth.getRole().toString())
         .user(userResponse)
         .build();
-
-
 
     } catch (FeignException.NotFound e) {
       throw new UserNotFoundException("User with email not found: " + e.getMessage());

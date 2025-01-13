@@ -15,4 +15,5 @@ public class UserResponse {
   String lastName;
   String email;
   String role;
+  Integer age;
 }

@@ -1,7 +1,17 @@
 package com.fintech.auth.controller.dto.request;
 
-public record UserRequest(
-  String firstName,
-  String lastName,
-  String email
-  ) { }
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserRequest{
+  String firstName;
+  String lastName;
+  String email;
+  Integer age;
+}
