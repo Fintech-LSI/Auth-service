@@ -16,4 +16,8 @@ public class UserResponse {
   String email;
   String role;
   Integer age;
+  String image;
+  String salary;
+  String homeOwnership;
+  String employmentMonth;
 }
