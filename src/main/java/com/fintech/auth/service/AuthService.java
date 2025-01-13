@@ -41,10 +41,11 @@ public class AuthService {
       if (BCrypt.checkpw(password, user.getPassword())) {
         // Generate JWT upon successful authentication
         String token =  jwtUtil.generateToken(user.getEmail() , user.getRole());
-        String role = user.getRole().toString();
+        UserResponse userResponse = userServiceClient.getUserByEmail(user.getEmail());
+        userResponse.setRole(user.getRole().toString());
         return JwtResponse.builder()
           .token(token)
-          .role(role)
+          .user(userResponse)
           .build();
       } else {
         throw new LoginFailed("Invalid password.");
@@ -81,7 +82,7 @@ public class AuthService {
     try {
       authRepository.save(auth);
     } catch (Exception e) {
-      userServiceClient.deleteUser(userResponse.id());
+      userServiceClient.deleteUser(userResponse.getId());
       throw new RegisterFailed("Failed to register user in Auth Service: so we delete the user in user service \n ::" + e.getMessage());
     }
 

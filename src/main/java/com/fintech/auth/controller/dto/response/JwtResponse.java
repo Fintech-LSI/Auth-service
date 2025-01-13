@@ -8,5 +8,5 @@ import java.io.Serializable;
 @Builder
 public class JwtResponse implements Serializable {
   private String token;
-  private String role;
+  private UserResponse user;
 }
