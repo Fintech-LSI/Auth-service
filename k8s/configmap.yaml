@@ -10,7 +10,7 @@ data:
       application:
         name: auth-service
       
-      datasource:
+      atasource:
         url: jdbc:mysql://terraform-20250114083330886600000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service?user=${SPRING_DATASOURCE_USERNAME}&password=${SPRING_DATASOURCE_PASSWORD}
         driver-class-name: com.mysql.cj.jdbc.Driver
         hikari:
