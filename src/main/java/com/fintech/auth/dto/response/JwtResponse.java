@@ -1,4 +1,4 @@
-package com.fintech.auth.controller.dto.response;
+package com.fintech.auth.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
