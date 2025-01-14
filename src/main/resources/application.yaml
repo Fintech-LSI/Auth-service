@@ -1,18 +1,21 @@
 spring:
   config:
-    import: optional:configserver:http://localhost:8889
+    import: optional:configserver:http://config-service:8889
   application:
     name: auth-service
   datasource:
-    url: jdbc:mysql://terraform-20250112150823870000000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
+    url: jdbc:mysql://terraform-20250114083330886600000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
-          dialect: org.hibernate.dialect.MySQL8Dialect
-
+        dialect: org.hibernate.dialect.MySQL8Dialect
+server:
+  port: 8946
 
 jwt:
   secret: 6f872872a7e1dde2431f5f3b393f6996dd21230f1bcef637cb776b2f2ce01679beb2adc1fe19f6680cc748a0cb90aff70768801501f1dc56b21288d77e86948b
