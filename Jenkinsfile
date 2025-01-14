@@ -13,7 +13,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                dir('auth-service') {  // Create a subdirectory for the project
+                    git branch: 'main',  // Adjust branch name if needed
+                    url: 'https://github.com/Fintech-LSI/Auth-service',
+                    credentialsId: 'github-credentials'  // Add this if it's a private repo
+                }
             }
         }
 

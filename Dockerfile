@@ -2,7 +2,7 @@
 FROM maven:3.9.6-amazoncorretto-21 AS build
 
 WORKDIR /app
-
+2
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
