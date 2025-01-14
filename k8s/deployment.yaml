@@ -18,12 +18,15 @@ spec:
           image: public.ecr.aws/z1z0w2y6/auth-service:latest
           ports:
             - containerPort: 8946
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
           envFrom:
             - configMapRef:
                 name: auth-service-config
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "prod"
+            - name: SPRING_CONFIG_LOCATION
+              value: file:/app/config/application.yml
             # Database credentials
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
@@ -59,3 +62,7 @@ spec:
               port: 8946
             initialDelaySeconds: 30
             periodSeconds: 10
+      volumes:
+        - name: config-volume
+          configMap:
+            name: auth-service-config
