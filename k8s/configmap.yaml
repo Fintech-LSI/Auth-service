@@ -27,7 +27,7 @@ data:
             format_sql: true
       
       config:
-        import: optional:configserver:http://config-server.fintech.svc.cluster.local:8889
+        import: optional:configserver:http://config-service.fintech.svc.cluster.local:8889
       
       eureka:
         client:
