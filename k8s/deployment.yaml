@@ -45,13 +45,13 @@ spec:
                 secretKeyRef:
                   name: jwt-credentials
                   key: jwt-expiration
-          resources:
+           resources:
             requests:
-              memory: "200Mi"
-              cpu: "100m"
-            limits:
               memory: "400Mi"
               cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "300m"
           readinessProbe:
             httpGet:
               path: /actuator/health
