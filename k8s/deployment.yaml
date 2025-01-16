@@ -14,51 +14,51 @@ spec:
         app: auth-service
     spec:
       containers:
-      - name: auth-service
-        image: public.ecr.aws/z1z0w2y6/auth-service:latest
-        ports:
-        - containerPort: 8946
-        env:
-        - name: SPRING_CONFIG_LOCATION
-          value: file:/app/config/application.yml
-        - name: SPRING_DATASOURCE_URL
-          valueFrom:
-            secretKeyRef:
-              name: mysql-credentials
-              key: url
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mysql-credentials
-              key: username
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-credentials
-              key: password
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "200m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8946
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8946
-          initialDelaySeconds: 90
-          periodSeconds: 20
-        volumeMounts:
-        - name: config-volume
-          mountPath: /app/config
+        - name: auth-service
+          image: public.ecr.aws/z1z0w2y6/auth-service:latest
+          ports:
+            - containerPort: 8946
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              value: file:/app/config/application.yml
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: password
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8946
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8946
+            initialDelaySeconds: 90
+            periodSeconds: 20
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
       volumes:
-      - name: config-volume
-        configMap:
-          name: auth-service-config
+        - name: config-volume
+          configMap:
+            name: auth-service-config
