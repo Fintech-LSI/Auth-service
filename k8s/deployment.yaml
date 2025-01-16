@@ -29,11 +29,11 @@ spec:
               value: file:/app/config/application.yml
             # Database configuration from file 1
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:mysql://database-1.c9smueeigd2l.eu-west-3.rds.amazonaws.com:3306/fintech_authentification"
+              value: "jdbc:mysql://my-database-instance.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service"
             - name: SPRING_DATASOURCE_USERNAME
-              value: "admin"
+              value: "root"
             - name: SPRING_DATASOURCE_PASSWORD
-              value: "test-123456"
+              value: "password"
             # JWT credentials (keeping these from file 2)
             - name: SPRING_JWT_SECRET
               valueFrom:
