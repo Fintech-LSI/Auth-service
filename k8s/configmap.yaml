@@ -9,26 +9,19 @@ data:
     spring:
       application:
         name: auth-service
-      
       datasource:
-        url: jdbc:mysql://terraform-20250114083330886600000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
+        url: ${SPRING_DATASOURCE_URL}
+        username: ${SPRING_DATASOURCE_USERNAME}
+        password: ${SPRING_DATASOURCE_PASSWORD}
         driver-class-name: com.mysql.cj.jdbc.Driver
-        hikari:
-          maximum-pool-size: 10
-          minimum-idle: 5
-          pool-name: MySQLPool
-      
       jpa:
         hibernate:
           ddl-auto: update
         properties:
           hibernate:
             dialect: org.hibernate.dialect.MySQL8Dialect
-            format_sql: true
-      
       config:
         import: optional:configserver:http://config-service.fintech.svc.cluster.local:8889
-      
       eureka:
         client:
           serviceUrl:
@@ -37,6 +30,5 @@ data:
           fetch-registry: true
         instance:
           prefer-ip-address: true
-    
     server:
       port: 8946
