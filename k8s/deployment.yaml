@@ -27,18 +27,14 @@ spec:
           env:
             - name: SPRING_CONFIG_LOCATION
               value: file:/app/config/application.yml
-            # Database credentials
+            # Database configuration from file 1
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://database-1.c9smueeigd2l.eu-west-3.rds.amazonaws.com:3306/fintech_authentification"
             - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-credentials
-                  key: username
+              value: "admin"
             - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-credentials
-                  key: password
-            # JWT credentials
+              value: "test-123456"
+            # JWT credentials (keeping these from file 2)
             - name: SPRING_JWT_SECRET
               valueFrom:
                 secretKeyRef:
