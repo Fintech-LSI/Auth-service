@@ -1,7 +1,7 @@
 package com.fintech.auth.service.feign_client;
 
-import com.fintech.auth.controller.dto.request.UserRequest;
-import com.fintech.auth.controller.dto.response.UserResponse;
+import com.fintech.auth.dto.request.UserRequest;
+import com.fintech.auth.dto.response.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

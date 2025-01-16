@@ -1,10 +1,9 @@
-package com.fintech.auth.controller.dto.response;
+package com.fintech.auth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 @Data
 @NoArgsConstructor
