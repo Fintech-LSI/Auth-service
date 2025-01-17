@@ -9,11 +9,6 @@ data:
     spring:
       application:
         name: auth-service
-      datasource:
-        url: ${SPRING_DATASOURCE_URL}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver
       jpa:
         hibernate:
           ddl-auto: update
@@ -21,14 +16,6 @@ data:
           hibernate:
             dialect: org.hibernate.dialect.MySQL8Dialect
       config:
-        import: optional:configserver:http://10.0.0.237:8889
-      eureka:
-        client:
-          serviceUrl:
-            defaultZone: http://10.0.1.176:8761/eureka/
-          register-with-eureka: true
-          fetch-registry: true
-        instance:
-          prefer-ip-address: true
+        import: optional:configserver:http://config-service:8889
     server:
       port: 8946
