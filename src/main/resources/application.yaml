@@ -18,13 +18,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
   management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"  # Expose all actuator endpoints
-  endpoint:
-    health:
-      show-details: always 
+    endpoints:
+      web:
+        exposure:
+          include: "*"  # Expose all actuator endpoints
+    endpoint:
+      health:
+        show-details: always 
 server:
   port: 8946
 
