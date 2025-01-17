@@ -3,6 +3,9 @@ spring:
     import: optional:configserver:http://config-service:8889
   application:
     name: auth-service
+  cloud:
+    discovery:
+      enabled: false
   datasource:
     url: jdbc:mysql://my-database-instance.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
     username: root
