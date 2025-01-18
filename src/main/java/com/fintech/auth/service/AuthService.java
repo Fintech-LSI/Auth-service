@@ -2,11 +2,11 @@ package com.fintech.auth.service;
 
 import com.fintech.auth.config.JwtUtil;
 import com.fintech.auth.config.exceptions.UserNotFoundException;
-import com.fintech.auth.controller.dto.request.RegisterRequest;
-import com.fintech.auth.controller.dto.request.UserRequest;
-import com.fintech.auth.controller.dto.response.JwtResponse;
-import com.fintech.auth.controller.dto.response.UserResponse;
-import com.fintech.auth.controller.dto.response.ValidResponse;
+import com.fintech.auth.dto.request.RegisterRequest;
+import com.fintech.auth.dto.request.UserRequest;
+import com.fintech.auth.dto.response.JwtResponse;
+import com.fintech.auth.dto.response.UserResponse;
+import com.fintech.auth.dto.response.ValidResponse;
 import com.fintech.auth.entity.Auth;
 import com.fintech.auth.entity.Role;
 import com.fintech.auth.exception.LoginFailed;
@@ -41,10 +41,11 @@ public class AuthService {
       if (BCrypt.checkpw(password, user.getPassword())) {
         // Generate JWT upon successful authentication
         String token =  jwtUtil.generateToken(user.getEmail() , user.getRole());
-        String role = user.getRole().toString();
+        UserResponse userResponse = userServiceClient.getUserByEmail(user.getEmail());
+        userResponse.setRole(user.getRole().toString());
         return JwtResponse.builder()
           .token(token)
-          .role(role)
+          .user(userResponse)
           .build();
       } else {
         throw new LoginFailed("Invalid password.");
@@ -70,33 +71,11 @@ public class AuthService {
       .role(Role.USER)
       .build();
 
-    UserResponse userResponse;
-    try {
-      // Send a request to create the user in User Service
-      userResponse = userServiceClient.createUser(
-        new UserRequest(request.firstName(), request.lastName(), request.email()));
-    } catch (Exception e) {
-      throw new RegisterFailed("Failed to register user in User Service: " + e.getMessage());
-    }
-    try {
-      authRepository.save(auth);
-    } catch (Exception e) {
-      userServiceClient.deleteUser(userResponse.id());
-      throw new RegisterFailed("Failed to register user in Auth Service: so we delete the user in user service \n ::" + e.getMessage());
-    }
+    addAuthUser(request, auth);
 
   }
 
-  public void deleteAuthUser(Long id) throws UserNotFoundException {
-    Optional<Auth> auth = authRepository.findById(id);
-    if (auth.isPresent()) {
-      authRepository.delete(auth.get());
-    }else {
-      throw new UserNotFoundException("User not found. in Auth Service /deleteAuthUser");
-    }
-  }
-
-  public ValidResponse validToken(String token) throws UserNotFoundException , RuntimeException {
+  public ValidResponse validToken(String token) throws  RuntimeException {
     try {
       String email = jwtUtil.extractEmail(token);
       UserResponse userResponse = userServiceClient.getUserByEmail(email);
@@ -109,8 +88,6 @@ public class AuthService {
         .user(userResponse)
         .build();
 
-
-
     } catch (FeignException.NotFound e) {
       throw new UserNotFoundException("User with email not found: " + e.getMessage());
     } catch (FeignException e) {
@@ -118,9 +95,57 @@ public class AuthService {
     }
   }
 
+  public void deleteAuthUser(Long id) throws UserNotFoundException {
+    Optional<Auth> auth = authRepository.findById(id);
+    if (auth.isPresent()) {
+      authRepository.delete(auth.get());
+    }else {
+      throw new UserNotFoundException("User not found. in Auth Service /deleteAuthUser");
+    }
+  }
 
+  public void addAdmin(RegisterRequest request) throws RegisterFailed {
+    // Check if the user already exists
+    if (authRepository.findByEmail(request.email()).isPresent()) {
+      throw new RegisterFailed("ADMIN OR USER already exists with email: " + request.email());
+    }
 
+    // Hash the password
+    String hashedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
 
+    // Create and save the Auth entity
+    Auth auth = Auth.builder()
+      .email(request.email())
+      .password(hashedPassword)
+      .role(Role.ADMIN)
+      .build();
+
+    addAuthUser(request, auth);
+
+  }
+
+  private void addAuthUser(RegisterRequest request, Auth auth) {
+    UserResponse userResponse;
+    try {
+      // Send a request to create the user in User Service
+      userResponse = userServiceClient.createUser(
+        UserRequest.builder()
+          .email(request.email())
+          .firstName(request.firstName())
+          .lastName(request.lastName())
+          .age(request.age())
+          .build()
+      );
+    } catch (Exception e) {
+      throw new RegisterFailed("Failed to register user in User Service: " + e.getMessage());
+    }
+    try {
+      authRepository.save(auth);
+    } catch (Exception e) {
+      userServiceClient.deleteUser(userResponse.getId());
+      throw new RegisterFailed("Failed to register user in Auth Service: so we delete the user in user service \n ::" + e.getMessage());
+    }
+  }
 }
 
 

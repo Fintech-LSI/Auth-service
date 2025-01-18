@@ -1,4 +1,4 @@
-package com.fintech.auth.controller.dto.request;
+package com.fintech.auth.dto.request;
 
 public record TokenRequest(
   String token

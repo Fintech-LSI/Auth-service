@@ -4,7 +4,7 @@ metadata:
   name: auth-service-deploy
   namespace: fintech
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: auth-service
@@ -17,14 +17,15 @@ spec:
         - name: auth-service
           image: public.ecr.aws/z1z0w2y6/auth-service:latest
           ports:
-            - containerPort: 8080
-          envFrom:
-            - configMapRef:
-                name: auth-service-config
+            - containerPort: 8946
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "prod"
-            # Database credentials
+            - name: SPRING_CONFIG_LOCATION
+              value: file:/app/config/application.yml
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: url
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -35,27 +36,40 @@ spec:
                 secretKeyRef:
                   name: mysql-credentials
                   key: password
-            # JWT credentials
-            - name: SPRING_JWT_SECRET
+            # Add JWT environment variables
+            - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: jwt-credentials
                   key: jwt-secret
-            - name: SPRING_JWT_EXPIRATION_TIME
+            - name: JWT_EXPIRATION
               valueFrom:
                 secretKeyRef:
                   name: jwt-credentials
                   key: jwt-expiration
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "150m"
-            limits:
               memory: "512Mi"
-              cpu: "300m"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
           readinessProbe:
             httpGet:
               path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 30
+              port: 8946
+            initialDelaySeconds: 60
             periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8946
+            initialDelaySeconds: 90
+            periodSeconds: 20
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: auth-service-config

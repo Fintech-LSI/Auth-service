@@ -1,4 +1,4 @@
-package com.fintech.auth.controller.dto.response;
+package com.fintech.auth.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,5 +8,5 @@ import java.io.Serializable;
 @Builder
 public class JwtResponse implements Serializable {
   private String token;
-  private String role;
+  private UserResponse user;
 }

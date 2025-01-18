@@ -8,6 +8,8 @@ pipeline {
         DOCKER_BUILD_NUMBER = "${BUILD_NUMBER}"
         EKS_CLUSTER_NAME = 'main-cluster'
         NAMESPACE = 'fintech'
+        SONAR_HOST_URL = 'http://54.86.47.1:9000'
+        SONAR_PROJECT_KEY = 'auth-service'
     }
 
     stages {
@@ -16,6 +18,38 @@ pipeline {
                 checkout scm
             }
         }
+
+        /*stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
+                        withSonarQubeEnv('SonarQube') {  // Add this wrapper
+                            try {
+                                sh """
+                                    mvn clean verify sonar:sonar \
+                                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                        -Dsonar.login=${SONAR_TOKEN}
+                                """
+                                echo "SonarQube analysis completed successfully."
+                            } catch (Exception e) {
+                                error "SonarQube analysis failed: ${e.message}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }*/
 
         stage('Build') {
             steps {
@@ -39,17 +73,14 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
                         try {
-                            // Login to ECR
                             sh """
                                 aws ecr-public get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                             """
 
-                            // Build and tag image
                             sh """
                                 docker build -t ${ECR_REGISTRY}/${IMAGE_NAME}:latest . --no-cache
                             """
 
-                            // Push the latest tag
                             sh """
                                 docker push ${ECR_REGISTRY}/${IMAGE_NAME}:latest
                             """

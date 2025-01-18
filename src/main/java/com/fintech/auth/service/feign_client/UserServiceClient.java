@@ -1,11 +1,11 @@
 package com.fintech.auth.service.feign_client;
 
-import com.fintech.auth.controller.dto.request.UserRequest;
-import com.fintech.auth.controller.dto.response.UserResponse;
+import com.fintech.auth.dto.request.UserRequest;
+import com.fintech.auth.dto.response.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "USER-SERVICE" )
+@FeignClient(name = "user-service", url = "http://user-service:8090")
 public interface UserServiceClient {
   @GetMapping("/api/users/{id}")
   UserResponse getUserById(@PathVariable("id") Long id);
