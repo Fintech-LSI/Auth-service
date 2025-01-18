@@ -5,8 +5,11 @@ spring:
     import: optional:configserver:http://config-service:8889
   application:
     name: auth-service
+  cloud:
+    discovery:
+      enabled: false
   datasource:
-    url: jdbc:mysql://terraform-20250114083330886600000001.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
+    url: jdbc:mysql://my-database-instance.c122egeymo28.us-east-1.rds.amazonaws.com:3306/auth_service
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,6 +19,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"  # Expose all actuator endpoints
+    endpoint:
+      health:
+        show-details: always 
 server:
   port: 8946
 

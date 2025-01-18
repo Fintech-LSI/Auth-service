@@ -13,6 +13,8 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
+# Install bash for debugging purposes
+RUN apt-get update && apt-get install -y bash
 
 COPY --from=build /app/target/*.jar app.jar
 
