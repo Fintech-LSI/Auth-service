@@ -3,8 +3,12 @@ spring:
     import: optional:configserver:http://localhost:8889
   application:
     name: auth-service
-
+  cloud:
+    discovery:
+      enabled: false
 
 jwt:
   secret: 6f872872a7e1dde2431f5f3b393f6996dd21230f1bcef637cb776b2f2ce01679beb2adc1fe19f6680cc748a0cb90aff70768801501f1dc56b21288d77e86948b
   expiration_time: 100000000000
+
+
