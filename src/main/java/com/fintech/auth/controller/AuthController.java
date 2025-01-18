@@ -30,11 +30,11 @@ public class AuthController {
   public ResponseEntity<List<JwtResponse>> test() throws LoginFailed {
     try {
       // Create and register a test user
-      RegisterRequest request = new RegisterRequest("test", "test", "test", "test", 30);
+      RegisterRequest request = new RegisterRequest("test", "test", "test@test.com", "password123", 30);
       authService.register(request);
 
       // Create and add an admin user
-      RegisterRequest requestA = new RegisterRequest("admin", "admin", "admin", "admin", 20);
+      RegisterRequest requestA = new RegisterRequest("admin", "admin", "admin@admin.com", "password123", 20);
       authService.addAdmin(requestA);
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -43,8 +43,8 @@ public class AuthController {
 
     // Authenticate both users and collect their JWT responses
     List<JwtResponse> jwtResponses = new ArrayList<>();
-    jwtResponses.add(authService.authenticate("admin", "admin"));
-    jwtResponses.add(authService.authenticate("test", "test"));
+    jwtResponses.add(authService.authenticate("admin@admin.com", "password123"));
+    jwtResponses.add(authService.authenticate("test@test.com", "password123"));
 
     // Return the list as a ResponseEntity
     return ResponseEntity.ok(jwtResponses);
