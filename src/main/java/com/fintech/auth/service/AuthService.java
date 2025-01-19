@@ -42,9 +42,9 @@ public class AuthService {
         // Generate JWT upon successful authentication
 
         UserResponse userResponse = userServiceClient.getUserByEmail(user.getEmail());
-        if (!userResponse.getIsEmailVerified()) {
-          throw new LoginFailed("Email not verified. Please verify your email first.");
-        }
+        // if (!userResponse.getIsEmailVerified()) {
+        //   throw new LoginFailed("Email not verified. Please verify your email first.");
+        // }
         userResponse.setRole(user.getRole().toString());
         String token =  jwtUtil.generateToken(user.getEmail() , user.getRole());
         return JwtResponse.builder()
@@ -76,7 +76,7 @@ public class AuthService {
       .build();
 
     addAuthUser(request, auth);
-    userServiceClient.sendVerifyEmail(auth.getEmail());
+    // userServiceClient.sendVerifyEmail(auth.getEmail());
 
   }
 
