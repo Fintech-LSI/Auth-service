@@ -30,11 +30,11 @@ public class AuthController {
   public ResponseEntity<List<JwtResponse>> test() throws LoginFailed {
     try {
       // Create and register a test user
-      RegisterRequest request = new RegisterRequest("test", "test", "test", "test", 30);
+      RegisterRequest request = new RegisterRequest("test", "test", "test@gmail.com", "test1234", 30);
       authService.register(request);
 
       // Create and add an admin user
-      RegisterRequest requestA = new RegisterRequest("admin", "admin", "admin", "admin", 20);
+      RegisterRequest requestA = new RegisterRequest("admin", "admin", "admin@gmail.com", "admin123", 20);
       authService.addAdmin(requestA);
     } catch (Exception e) {
       System.out.println(e.getMessage());
