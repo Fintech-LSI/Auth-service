@@ -6,14 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class ValidResponse{
-  Boolean valid ;
-  String email ;
-  String Role ;
-  UserResponse user;
-  boolean isEmailVerified;
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class MessageResponse {
+  private String message;
 }

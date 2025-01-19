@@ -4,16 +4,14 @@ import com.fintech.auth.config.exceptions.UserNotFoundException;
 import com.fintech.auth.dto.request.LoginRequest;
 import com.fintech.auth.dto.request.RegisterRequest;
 import com.fintech.auth.dto.request.TokenRequest;
-import com.fintech.auth.dto.response.JwtResponse;
-import com.fintech.auth.dto.response.RegisterResponse;
-import com.fintech.auth.dto.response.ValidResponse;
+import com.fintech.auth.dto.response.*;
 import com.fintech.auth.exception.LoginFailed;
 import com.fintech.auth.service.AuthService;
+import com.fintech.auth.service.feign_client.UserServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fintech.auth.dto.response.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +24,22 @@ public class AuthController {
   AuthService authService;
 
 
+  @Autowired
+  UserServiceClient userServiceClient;
+  @GetMapping("/e/{email}")
+  public ResponseEntity<UserResponse> ind(@PathVariable String email){
+    return ResponseEntity.ok( userServiceClient.getUserByEmail(email) );
+  }
+
   @GetMapping("/test")
   public ResponseEntity<List<JwtResponse>> test() throws LoginFailed {
     try {
       // Create and register a test user
-      RegisterRequest request = new RegisterRequest("test", "test", "test@gmail.com", "test1234", 30);
+      RegisterRequest request = new RegisterRequest("test", "test", "test@test.com", "password123", 30);
       authService.register(request);
 
       // Create and add an admin user
-      RegisterRequest requestA = new RegisterRequest("admin", "admin", "admin@gmail.com", "admin123", 20);
+      RegisterRequest requestA = new RegisterRequest("admin", "admin", "admin@admin.com", "password123", 20);
       authService.addAdmin(requestA);
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -43,8 +48,8 @@ public class AuthController {
 
     // Authenticate both users and collect their JWT responses
     List<JwtResponse> jwtResponses = new ArrayList<>();
-    jwtResponses.add(authService.authenticate("admin", "admin"));
-    jwtResponses.add(authService.authenticate("test", "test"));
+    jwtResponses.add(authService.authenticate("admin@admin.com", "password123"));
+    jwtResponses.add(authService.authenticate("test@test.com", "password123"));
 
     // Return the list as a ResponseEntity
     return ResponseEntity.ok(jwtResponses);
