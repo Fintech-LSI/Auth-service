@@ -87,11 +87,12 @@ public class AuthService {
       Auth userAuth = authRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found in auth"));
 
       return ValidResponse.builder()
-        .valid(true)
-        .email(userAuth.getEmail())
-        .Role(userAuth.getRole().toString())
-        .isEmailVerified(userResponse.getIsEmailVerified())
-        .build();
+              .valid(true)
+              .email(userAuth.getEmail())
+              .Role(userAuth.getRole().toString())
+              .user(userResponse)
+              .isEmailVerified(userResponse.getIsEmailVerified())
+              .build();
 
     } catch (FeignException.NotFound e) {
       throw new UserNotFoundException("User with email not found: " + e.getMessage());
