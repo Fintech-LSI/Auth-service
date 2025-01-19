@@ -91,7 +91,7 @@ public class AuthService {
               .email(userAuth.getEmail())
               .Role(userAuth.getRole().toString())
               .user(userResponse)
-              .isEmailVerified(userResponse.getIsEmailVerified())
+            //  .isEmailVerified(userResponse.getIsEmailVerified())
               .build();
 
     } catch (FeignException.NotFound e) {
