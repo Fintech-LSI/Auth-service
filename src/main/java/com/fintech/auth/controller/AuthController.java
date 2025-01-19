@@ -4,16 +4,14 @@ import com.fintech.auth.config.exceptions.UserNotFoundException;
 import com.fintech.auth.dto.request.LoginRequest;
 import com.fintech.auth.dto.request.RegisterRequest;
 import com.fintech.auth.dto.request.TokenRequest;
-import com.fintech.auth.dto.response.JwtResponse;
-import com.fintech.auth.dto.response.RegisterResponse;
-import com.fintech.auth.dto.response.ValidResponse;
+import com.fintech.auth.dto.response.*;
 import com.fintech.auth.exception.LoginFailed;
 import com.fintech.auth.service.AuthService;
+import com.fintech.auth.service.feign_client.UserServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fintech.auth.dto.response.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,13 @@ public class AuthController {
   @Autowired
   AuthService authService;
 
+
+  @Autowired
+  UserServiceClient userServiceClient;
+  @GetMapping("/e/{email}")
+  public ResponseEntity<UserResponse> ind(@PathVariable String email){
+    return ResponseEntity.ok( userServiceClient.getUserByEmail(email) );
+  }
 
   @GetMapping("/test")
   public ResponseEntity<List<JwtResponse>> test() throws LoginFailed {

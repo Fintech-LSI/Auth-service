@@ -40,9 +40,13 @@ public class AuthService {
       Auth user = userAuth.get();
       if (BCrypt.checkpw(password, user.getPassword())) {
         // Generate JWT upon successful authentication
-        String token =  jwtUtil.generateToken(user.getEmail() , user.getRole());
+
         UserResponse userResponse = userServiceClient.getUserByEmail(user.getEmail());
+        if (!userResponse.getIsEmailVerified()) {
+          throw new LoginFailed("Email not verified. Please verify your email first.");
+        }
         userResponse.setRole(user.getRole().toString());
+        String token =  jwtUtil.generateToken(user.getEmail() , user.getRole());
         return JwtResponse.builder()
           .token(token)
           .user(userResponse)
@@ -72,6 +76,7 @@ public class AuthService {
       .build();
 
     addAuthUser(request, auth);
+    userServiceClient.sendVerifyEmail(auth.getEmail());
 
   }
 
@@ -85,7 +90,7 @@ public class AuthService {
         .valid(true)
         .email(userAuth.getEmail())
         .Role(userAuth.getRole().toString())
-        .user(userResponse)
+        .isEmailVerified(userResponse.getIsEmailVerified())
         .build();
 
     } catch (FeignException.NotFound e) {

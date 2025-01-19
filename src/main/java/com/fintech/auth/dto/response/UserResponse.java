@@ -20,4 +20,6 @@ public class UserResponse {
   String salary;
   String homeOwnership;
   String employmentMonth;
+  Boolean isEmailVerified;
+
 }
