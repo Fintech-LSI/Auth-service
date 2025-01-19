@@ -14,6 +14,6 @@ public class ValidResponse{
   String email ;
   String Role ;
   UserResponse user;
-  boolean isEmailVerified;
+  //boolean isEmailVerified;
 
 }
